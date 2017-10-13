@@ -1,35 +1,31 @@
-#
-# This is a multi-stage build.
-# Actual build is at the very end.
-#
-
 FROM library/ubuntu:xenial AS build
 
-ENV DEBIAN_FRONTEND noninteractive
-ENV LANG C.UTF-8
+ENV LANG=C.UTF-8
 
-RUN apt-get update && \
-    apt-get install -y \
+RUN export DEBIAN_FRONTEND=noninteractive \
+ && apt-get update \
+ && apt-get install -y \
         python-software-properties \
         software-properties-common \
         apt-utils
-RUN apt-get install -y \
+RUN export DEBIAN_FRONTEND=noninteractive \
+ && apt-get install -y \
         wget
 
-RUN wget -qO - https://openresty.org/package/pubkey.gpg | apt-key add - && \
-    add-apt-repository -y "deb http://openresty.org/package/ubuntu xenial main" && \
-    apt-get update
+RUN wget -qO - https://openresty.org/package/pubkey.gpg | apt-key add - \
+ && add-apt-repository -y "deb http://openresty.org/package/ubuntu xenial main" \
+ && apt-get update
 
-RUN mkdir -p /build/image
+RUN mkdir -p /build /rootfs
 WORKDIR /build
 RUN apt-get download \
         openresty \
         openresty-openssl \
         openresty-pcre \
         openresty-zlib
-RUN for file in *.deb; do dpkg-deb -x ${file} image/; done
+RUN find *.deb | xargs -I % dpkg-deb -x % /rootfs
 
-WORKDIR /build/image
+WORKDIR /rootfs
 RUN rm -rf \
         etc/* \
         lib/* \
@@ -49,11 +45,14 @@ RUN rm -rf \
         -e 's,^ *[#;]? *worker_processes *.*$,worker_processes auto;,g' \
         usr/local/openresty/nginx/conf/nginx.conf
 
+WORKDIR /
+
 
 FROM clover/base
 
-WORKDIR /
-COPY --from=build /build/image /
+ENV LANG=C.UTF-8
+
+COPY --from=build /rootfs /
 
 CMD ["openresty", "-g", "daemon off;"]
 
