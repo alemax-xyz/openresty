@@ -1,11 +1,10 @@
-FROM library/ubuntu:xenial AS build
+FROM library/ubuntu:bionic AS build
 
 ENV LANG=C.UTF-8
 
 RUN export DEBIAN_FRONTEND=noninteractive \
  && apt-get update \
  && apt-get install -y \
-        python-software-properties \
         software-properties-common \
         apt-utils
 RUN export DEBIAN_FRONTEND=noninteractive \
@@ -13,7 +12,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
         wget
 
 RUN wget -qO - https://openresty.org/package/pubkey.gpg | apt-key add - \
- && add-apt-repository -y "deb http://openresty.org/package/ubuntu xenial main" \
+ && add-apt-repository -y "deb http://openresty.org/package/ubuntu bionic main" \
  && apt-get update
 
 RUN mkdir -p /build /rootfs
