@@ -33,13 +33,13 @@ RUN rm -rf \
         usr/local/openresty/luajit/lib/pkgconfig \
         usr/local/openresty/nginx/conf/*.default \
         usr/local/openresty/nginx/sbin/stap-nginx \
-        usr/local/openresty/nginx/tapset && \
-    mkdir -p var/log && \
-    ln -s /usr/local/openresty/nginx/conf etc/nginx && \
-    ln -s /usr/local/openresty/nginx/logs var/log/nginx && \
-    ln -s /dev/stderr usr/local/openresty/nginx/logs/error.log  && \
-    ln -s /dev/stdout usr/local/openresty/nginx/logs/access.log  && \
-    sed -i -r \
+        usr/local/openresty/nginx/tapset \
+ && mkdir -p var/log \
+ && ln -s /usr/local/openresty/nginx/conf etc/nginx \
+ && ln -s /usr/local/openresty/nginx/logs var/log/nginx \
+ && ln -s /dev/stderr usr/local/openresty/nginx/logs/error.log \
+ && ln -s /dev/stdout usr/local/openresty/nginx/logs/access.log \
+ && sed -i -r \
         -e 's,^ *[#;]? *user *.*$,user root root;,g' \
         -e 's,^ *[#;]? *worker_processes *.*$,worker_processes auto;,g' \
         usr/local/openresty/nginx/conf/nginx.conf
