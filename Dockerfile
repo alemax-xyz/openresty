@@ -44,6 +44,8 @@ RUN rm -rf \
         -e 's,^ *[#;]? *worker_processes *.*$,worker_processes auto;,g' \
         usr/local/openresty/nginx/conf/nginx.conf
 
+COPY init/ etc/init/
+
 WORKDIR /
 
 
@@ -52,7 +54,5 @@ FROM clover/base
 ENV LANG=C.UTF-8
 
 COPY --from=build /rootfs /
-
-CMD ["openresty", "-g", "daemon off;"]
 
 EXPOSE 80 443
