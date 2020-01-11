@@ -1,3 +1,3 @@
 #!/bin/sh
 
-openresty -g "daemon off;"
+exec openresty -g "daemon off;"
