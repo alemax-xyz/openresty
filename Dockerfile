@@ -39,6 +39,7 @@ RUN rm -rf \
         usr/local/openresty/nginx/conf/nginx.conf
 
 COPY etc/ etc/
+COPY usr/ usr/
 
 WORKDIR /
 
