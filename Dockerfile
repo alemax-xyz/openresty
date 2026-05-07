@@ -3,9 +3,7 @@ FROM library/debian:stable-slim AS build
 ENV LANG=C.UTF-8
 
 RUN export DEBIAN_FRONTEND=noninteractive \
- && apt-get update \
- && apt-get install -y \
-        apt-utils
+ && apt-get update
 
 RUN echo "deb [trusted=true] http://openresty.org/package/debian bookworm openresty" > /etc/apt/sources.list.d/openresty.list \
  && apt-get update
@@ -45,7 +43,8 @@ WORKDIR /
 
 FROM clover/base
 
-ENV LANG=C.UTF-8
+ENV LANG=C.UTF-8 \
+    OPENRESTY_DIRECTIVES="error_log /dev/stderr warn;"
 
 COPY --from=build /rootfs /
 
